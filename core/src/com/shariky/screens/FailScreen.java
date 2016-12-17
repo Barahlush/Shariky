@@ -1,6 +1,5 @@
-package com.shariky.game;
+package com.shariky.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -10,34 +9,41 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Created by User on 19.11.2016.
+ * Created by User on 20.11.2016.
  */
 
-public class MainMenuScreen implements Screen {
+public class FailScreen implements Screen {
 
     final Shariky game;
     OrthographicCamera camera;
     Vector3 touchPos;
-    boolean isBtnPresd, isBtnPresdOccur, clicked;
-    Texture newGameBtn, newGameBtnPrsd;
+    boolean isBtnPresd, isRecord, clicked;
+    Texture repeatBtn, repeatBtnPrsd, bg;
     Sound click;
 
-    public MainMenuScreen(Shariky gam) {
+    public FailScreen(Shariky gam) {
         this.game = gam;
 
         isBtnPresd = false;
         clicked = false;
-        isBtnPresdOccur = false;
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 480, 800);
 
+        if (game.score > game.record)
+            isRecord = true;
+        else
+            isRecord = false;
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, game.gameWidth, game.gameHeight);
         touchPos = new Vector3();
 
-        game.record = 0;
+        repeatBtn = new Texture("repeat.png");
+        repeatBtnPrsd = new Texture("repeatpressed.png");
+        bg = new Texture("bgfailpic.png");
 
-        newGameBtn = new Texture("ngbtn.png");
-        newGameBtnPrsd = new Texture("ngbtnpressed.png");
         click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
+
+        if (game.score > game.record)
+            game.record = game.score;
     }
 
 
@@ -47,6 +53,7 @@ public class MainMenuScreen implements Screen {
     }
 
     // Отрисовка
+
     @Override
     public void render(float delta) {
 
@@ -57,30 +64,34 @@ public class MainMenuScreen implements Screen {
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        game.font.draw(game.batch, "SHARIKY 0.1", 200, 795);
+        game.batch.draw(bg, 0, 0);
+        game.font.draw(game.batch, "Failed :(", 200, 710);
+        game.font.draw(game.batch, "Your score: " + game.score, 200, 690);
+        if (isRecord)
+            game.font.draw(game.batch, "NEW RECORD!", 200, 670);
         if (!isBtnPresd)
-            game.batch.draw(newGameBtn, 132, 400);
+            game.batch.draw(repeatBtn, 171, 336);
         else {
-            game.batch.draw(newGameBtnPrsd, 132, 400);
+            game.batch.draw(repeatBtnPrsd, 171, 336);
         }
         game.batch.end();
 
-        // Нажатие на кнопку
+    // Нажатие на кнопку
 
         if (Gdx.input.isTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
-            if (touchPos.x > 132 && touchPos.x < 358 && touchPos.y < 480 && touchPos.y > 400) {
+            if (touchPos.x > 171 && touchPos.x < 299 && touchPos.y < 464 && touchPos.y > 336) {
                 isBtnPresd = true;
                 if (!clicked) {
                     click.play();
                     clicked = true;
                 }
-            } else
-                isBtnPresd = false;
+            }
         }
-        if (!Gdx.input.isTouched() && isBtnPresd) {
+        if (isBtnPresd && !Gdx.input.isTouched()) {
             game.setScreen(new GameScreen(game));
+            isBtnPresd = false;
             dispose();
         }
     }
@@ -107,8 +118,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        newGameBtn.dispose();
-        newGameBtnPrsd.dispose();
+        repeatBtn.dispose();
+        repeatBtnPrsd.dispose();
         click.dispose();
+        bg.dispose();
     }
 }

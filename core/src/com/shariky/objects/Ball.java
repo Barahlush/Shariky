@@ -1,4 +1,4 @@
-package com.shariky.game;
+package com.shariky.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,7 +14,7 @@ public class Ball {
     private int speed;
 
     public Rectangle body;
-    Ball(Texture color, int x, int y, int speed) {
+    public Ball(Texture color, int x, int y, int speed) {
         this.body = new Rectangle();
         this.setColor(color);
         this.setX(x);
@@ -22,6 +22,10 @@ public class Ball {
         this.body.width = 60;
         this.body.height = 60;
         this.speed = speed;
+    }
+
+    public void update() {
+
     }
 
     // SETTLERS

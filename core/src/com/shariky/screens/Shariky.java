@@ -1,8 +1,13 @@
-package com.shariky.game;
+package com.shariky.screens;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.shariky.helpers.AssetLoader;
+
+import static com.shariky.helpers.AssetLoader.basicBatch;
+import static com.shariky.helpers.AssetLoader.basicFont;
 
 /**
  * Created by User on 19.11.2016.
@@ -10,16 +15,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Shariky extends Game {
 
+    public int record, score;
+
     SpriteBatch batch;
     BitmapFont font;
-    public int record, score;
+
+    public float gameWidth = 480;
+    public float gameHeight = 800;
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        font = new BitmapFont();
+        AssetLoader.load();
+        batch = basicBatch;
+        font = basicFont;
         this.setScreen(new MainMenuScreen(this));
-
     }
 
     @Override
@@ -30,7 +39,6 @@ public class Shariky extends Game {
     @Override
     public void dispose() {
         super.dispose();
-        batch.dispose();
-        font.dispose();
+        AssetLoader.dispose();
     }
 }
