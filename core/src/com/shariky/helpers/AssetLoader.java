@@ -25,13 +25,9 @@ public class AssetLoader {
         basicBatch = new SpriteBatch();
         basicFont = new BitmapFont();
         greenBall = new Texture("gr60.png");
-        greenBall.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Nearest);
         redBall = new Texture("red_grey60.png");
-        redBall.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Nearest);
         yellowBall = new Texture("yel_bl60.png");
-        yellowBall.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Nearest);
         bgtexture = new Texture("bgpicnew.png");
-        bgtexture.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Nearest);
 
         click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
         musicBall = Gdx.audio.newMusic(Gdx.files.internal("sharikmus.mp3"));

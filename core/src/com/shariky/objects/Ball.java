@@ -1,7 +1,6 @@
 package com.shariky.objects;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -22,10 +21,6 @@ public class Ball {
         this.body.width = 60;
         this.body.height = 60;
         this.speed = speed;
-    }
-
-    public void update() {
-
     }
 
     // SETTLERS
@@ -56,6 +51,17 @@ public class Ball {
     public float getHeight() { return this.body.height; }
     public float getWidth() { return this.body.width; }
 
+    public boolean clickCheck(float touch_x, float touch_y) {
+        if (((touch_x - body.getX() < 60 && touch_x - body.getX() >= 0) ||
+                (touch_x - body.getX() >= 0 && touch_x - body.getX() <= 0))
+        &&
+        ((touch_y - body.getY() < 80 && touch_y - body.getY() >= 0) ||
+                (touch_y - body.getY() >= 0 && touch_y - body.getY() <= 0))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 

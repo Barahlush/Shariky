@@ -1,7 +1,6 @@
 package com.shariky.screens;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.shariky.helpers.AssetLoader;
@@ -19,6 +18,13 @@ public class Shariky extends Game {
 
     SpriteBatch batch;
     BitmapFont font;
+
+    public enum AppState {
+        MAIN_MENU,
+        GAME,
+        FAILSCREEN,
+        QUIT_MENU
+    }
 
     public float gameWidth = 480;
     public float gameHeight = 800;

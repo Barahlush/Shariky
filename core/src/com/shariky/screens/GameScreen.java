@@ -1,9 +1,6 @@
 package com.shariky.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-
 import com.shariky.gamefield.GameRenderer;
 import com.shariky.gamefield.GameWorld;
 
@@ -14,8 +11,13 @@ public class GameScreen implements Screen {
     final Shariky game;
     private GameWorld world;
     private GameRenderer renderer;
-
-
+    public enum State {
+        RUN,
+        PAUSE,
+        RESUME,
+        STOPPED
+    }
+    private State gameState = State.RUN;
 
 
 	public GameScreen (final Shariky gam) {
@@ -24,18 +26,22 @@ public class GameScreen implements Screen {
         renderer = new GameRenderer(world, this.game);
         world.setCamera(renderer.getCamera());
 
-
         musicBall.setLooping(true);
 		musicBall.play();
-
-        Gdx.gl.glClearColor(1, 1, 1, 1);
 	}
 
     // Отрисовка
 	@Override
 	public void render (float delta) {
-        world.update(delta);
-        renderer.render();
+
+        switch(gameState) {
+            case RUN:
+                world.update(delta);
+                renderer.render(gameState);
+                break;
+            case PAUSE:
+                renderer.render(gameState);
+        }
 	}
 
     @Override

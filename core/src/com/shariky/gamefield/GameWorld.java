@@ -90,7 +90,7 @@ public class GameWorld {
     private void spawnBall() {
         Ball ball = new Ball(
                 ballMix(),
-                MathUtils.random(20, 460 - ballSize),
+                MathUtils.random(40, 440 - ballSize),
                 800,
                 (int) (60 + game.score / 5)
         );
@@ -151,11 +151,7 @@ public class GameWorld {
             if (!ballRemoved) {
 
                 // Попадание в шарик
-                if (((touchPos.x - ball.getX() < 60 && touchPos.x - ball.getX() >= 0) ||
-                        (touchPos.x - ball.getX() >= 0 && touchPos.x - ball.getX() <= 0))
-                        &&
-                        ((touchPos.y - ball.getY() < 80 && touchPos.y - ball.getY() >= 0) ||
-                                (touchPos.y - ball.getY() >= 0 && touchPos.y - ball.getY() <= 0)))
+                if (ball.clickCheck(touchPos.x, touchPos.y))
                 {
                     if (fieldColor((int) touchPos.y) == ball.getColor()) {
                         game.score += 10;
