@@ -1,6 +1,6 @@
 package com.shariky.objects;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -8,12 +8,13 @@ import com.badlogic.gdx.math.Rectangle;
  */
 
 public class Ball {
-    private Texture color;
+    private TextureRegion color;
 
     private int speed;
 
     public Rectangle body;
-    public Ball(Texture color, int x, int y, int speed) {
+
+    public Ball(TextureRegion color, int x, int y, int speed) {
         this.body = new Rectangle();
         this.setColor(color);
         this.setX(x);
@@ -24,39 +25,36 @@ public class Ball {
     }
 
     // SETTLERS
-    public void setColor(Texture color) {
+    public void setColor(TextureRegion color) {
     this.color = color;
     }
     public void setX(int X) {
-        this.body.x = X;
+        body.x = X;
     }
     public void setY(int Y) {
-        this.body.y = Y;
+        body.y = Y;
     }
     public void setSpeed(int speed) { this.speed = speed; }
 
     // GETTERS
     public int getSpeed() {
-        return this.speed;
+        return speed;
     }
-    public Texture getColor() {
-        return this.color;
+    public TextureRegion getColor() {
+        return color;
     }
     public float getX() {
-        return this.body.x;
+        return body.x;
     }
     public float getY() {
-        return this.body.y;
+        return body.y;
     }
-    public float getHeight() { return this.body.height; }
-    public float getWidth() { return this.body.width; }
+    public float getHeight() { return body.height; }
+    public float getWidth() { return body.width; }
 
     public boolean clickCheck(float touch_x, float touch_y) {
-        if (((touch_x - body.getX() < 60 && touch_x - body.getX() >= 0) ||
-                (touch_x - body.getX() >= 0 && touch_x - body.getX() <= 0))
-        &&
-        ((touch_y - body.getY() < 80 && touch_y - body.getY() >= 0) ||
-                (touch_y - body.getY() >= 0 && touch_y - body.getY() <= 0))) {
+        if ((touch_x - body.getX() < body.width && touch_x - body.getX() >= 0) &&
+        (touch_y - body.getY() < body.height * (4/3) && touch_y - body.getY() >= 0)) {
             return true;
         } else {
             return false;

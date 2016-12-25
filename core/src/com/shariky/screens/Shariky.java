@@ -16,9 +16,10 @@ public class Shariky extends Game {
 
     public int record, score;
 
-    SpriteBatch batch;
-    BitmapFont font;
-
+    public SpriteBatch batch;
+    public BitmapFont font;
+    public AssetLoader loader;
+    static public boolean sound_ON;
     public enum AppState {
         MAIN_MENU,
         GAME,
@@ -26,12 +27,14 @@ public class Shariky extends Game {
         QUIT_MENU
     }
 
-    public float gameWidth = 480;
-    public float gameHeight = 800;
+    public float width = 480;
+    public float height = 800;
 
     @Override
     public void create() {
-        AssetLoader.load();
+        sound_ON = true;
+        loader = new AssetLoader();
+        loader.load();
         batch = basicBatch;
         font = basicFont;
         this.setScreen(new MainMenuScreen(this));
@@ -45,6 +48,6 @@ public class Shariky extends Game {
     @Override
     public void dispose() {
         super.dispose();
-        AssetLoader.dispose();
+        loader.dispose();
     }
 }

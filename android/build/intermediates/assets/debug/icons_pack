@@ -1,0 +1,75 @@
+
+ballspics_hd1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+repeat
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+rating
+  rotate: false
+  xy: 260, 2
+  size: 149, 159
+  orig: 149, 159
+  offset: 0, 0
+  index: -1
+soundon
+  rotate: false
+  xy: 2, 260
+  size: 156, 156
+  orig: 156, 156
+  offset: 0, 0
+  index: -1
+soundoff
+  rotate: false
+  xy: 160, 260
+  size: 156, 156
+  orig: 156, 156
+  offset: 0, 0
+  index: -1
+playup
+  rotate: false
+  xy: 318, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+pause
+  rotate: false
+  xy: 2, 418
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+yl
+  rotate: false
+  xy: 260, 163
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+rd
+  rotate: false
+  xy: 411, 2
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+killer
+  rotate: false
+  xy: 411, 86
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+grn
+  rotate: false
+  xy: 411, 170
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1

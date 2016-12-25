@@ -1,10 +1,9 @@
 package com.shariky.gamefield;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -15,10 +14,9 @@ import com.shariky.screens.Shariky;
 
 import java.util.Iterator;
 
-import static com.shariky.helpers.AssetLoader.bgtexture;
-import static com.shariky.helpers.AssetLoader.greenBall;
-import static com.shariky.helpers.AssetLoader.redBall;
-import static com.shariky.helpers.AssetLoader.yellowBall;
+import static com.shariky.gamefield.GameWorld.State.PAUSE;
+import static com.shariky.gamefield.GameWorld.State.RUN;
+import static com.shariky.helpers.AssetLoader.musicBall;
 
 
 /**
@@ -26,43 +24,47 @@ import static com.shariky.helpers.AssetLoader.yellowBall;
  */
 
 public class GameWorld {
+
+    final Shariky game;
+
+    public enum State {
+        RUN,
+        PAUSE,
+        RESUME,
+        STOPPED
+    }
+    public State game_state;
+
     Vector3 touchPos;
     Rectangle touch;
 
-    boolean ballRemoved;
+    static final int ballSize = 60;
+    boolean ballRemoved, darken, sound_pressed;
     Array<Ball> balls;
 
     int lives;
 
-    private Texture yBall, rBall, gBall, bg;
-    private Sound cl;
-    private Music mus;
-
-    final Shariky game;
+    private TextureRegion yBall, rBall, gBall;
 
     long spawnTime, lastBallTime;
     static long startSpawnTime;
     OrthographicCamera camera;
 
-    static final int ballSize = 60;
+    public com.shariky.objects.Button pauseBtn, playBtn, soundBtn;
 
     public void setCamera(OrthographicCamera cam) {
         camera = cam;
     }
-
-    public void assetInit() {
-        yBall = yellowBall;
-        rBall = redBall;
-        gBall = greenBall;
-        bg = bgtexture;
-    }
+    ShapeRenderer shapeRenderer;
 
     public GameWorld(final Shariky gam) {
-
-
         game = gam;
+        shapeRenderer = new ShapeRenderer();
 
-        assetInit();
+        yBall = game.loader.yl_bl;
+        rBall = game.loader.rd_gr;
+        gBall = game.loader.grn;
+        game_state = RUN;
 
         touchPos = new Vector3();
         touch = new Rectangle();
@@ -73,14 +75,27 @@ public class GameWorld {
         balls = new Array<Ball>();
         spawnBall();
         ballRemoved = false;
+        sound_pressed = false;
+
+        darken = false;
+        pauseBtn = new com.shariky.objects.Button(game.loader.pause, 445, 758, 35, 35);
+        if (game.sound_ON)
+            soundBtn = new com.shariky.objects.Button(game.loader.sound_on, 6, 760, 45, 45);
+        else
+            soundBtn = new com.shariky.objects.Button(game.loader.sound_off, 6, 760, 45, 45);
+        playBtn = new com.shariky.objects.Button(game.loader.playup, 180, 400);
+
+
+        if (game.sound_ON)
+            musicBall.play();
 
 
         game.score = 0;
-        lives = 100;
+        lives = 6;
     }
 
     // Определение цвета поля по касанию
-    private Texture fieldColor(int y) {
+    private TextureRegion fieldColor(int y) {
         if (y < 250) return rBall;
         else if (y < 500) return yBall;
         else return gBall;
@@ -100,7 +115,7 @@ public class GameWorld {
 
     // Рандомизация цвета для генератора
 
-    private Texture ballMix() {
+    private TextureRegion ballMix() {
         int color = MathUtils.random(0, 2);
         switch (color) {
             case 0:
@@ -117,11 +132,6 @@ public class GameWorld {
         return balls;
     }
 
-    public Texture getBg() {
-        return bg;
-    }
-
-
     public void update(float delta) {
 
         // Действия при касании
@@ -131,46 +141,88 @@ public class GameWorld {
         } else
             ballRemoved = false;
 
-        // Генерирование шариков по времени
-        if (TimeUtils.nanoTime() - lastBallTime > spawnTime) spawnBall();
 
-        // Изменение модели
-
-        Iterator<Ball> iter = balls.iterator();
-        while (iter.hasNext()) {
-            Ball ball = iter.next();
-            ball.setY((int)(ball.getY() - ball.getSpeed() * Gdx.graphics.getDeltaTime()));
-            if (ball.getY() == 0)
-                ball.setSpeed(200);
-
-            // Проваливание шарика вниз
-            if (ball.getY() + ballSize < 0) {
-                lives -= 20;
-                iter.remove();
-            }
-            if (!ballRemoved) {
-
-                // Попадание в шарик
-                if (ball.clickCheck(touchPos.x, touchPos.y))
-                {
-                    if (fieldColor((int) touchPos.y) == ball.getColor()) {
-                        game.score += 10;
-                        spawnTime = startSpawnTime - game.score * 1000000;
-                    } else {
-                        lives -= 10;
+        if(game_state != PAUSE) {
+            // SOUND BTN
+                if (soundBtn.clickCheck(touchPos.x, touchPos.y)) {
+                    if (!sound_pressed) {
+                        if (game.sound_ON) {
+                            soundBtn.setButtonTexture(game.loader.sound_off);
+                            game.sound_ON = false;
+                            musicBall.pause();
+                        } else {
+                            soundBtn.setButtonTexture(game.loader.sound_on);
+                            game.sound_ON = true;
+                            musicBall.play();
+                        }
+                        sound_pressed = true;
                     }
-                    ballRemoved = true;
+                } else {
+                    sound_pressed = false;
+                }
+            // PAUSE BTN
+            if (pauseBtn.clickCheck(touchPos.x, touchPos.y)) {
+                game_state = PAUSE;
+
+                if (game.sound_ON)
+                    game.loader.click.play();
+                musicBall.pause();
+            }
+        } else
+        // PLAY BTN
+        if (playBtn.clickCheck(touchPos.x, touchPos.y)) {
+            game_state = RUN;
+            darken = false;
+            if (game.sound_ON) {
+                game.loader.click.play();
+                musicBall.play();
+            }
+        }
+
+        // MODEL
+        if (game_state == RUN) {
+
+            // Генерирование шариков по времени
+            if (TimeUtils.nanoTime() - lastBallTime > spawnTime) spawnBall();
+
+            // Изменение модели
+
+            Iterator<Ball> iter = balls.iterator();
+            while (iter.hasNext()) {
+                Ball ball = iter.next();
+                ball.setY((int) (ball.getY() - ball.getSpeed() * Gdx.graphics.getDeltaTime()));
+                if (ball.getY() == 0)
+                    ball.setSpeed(200);
+
+                // Проваливание шарика вниз
+                if (ball.getY() + ballSize < 0) {
+                    lives -= 2;
                     iter.remove();
                 }
+                if (!ballRemoved) {
+
+                    // Попадание в шарик
+                    if (ball.clickCheck(touchPos.x, touchPos.y)) {
+                        if (fieldColor((int) touchPos.y) == ball.getColor()) {
+                            game.score += 10;
+                            spawnTime = startSpawnTime - game.score * 1000000;
+                        } else {
+                            lives -= 1;
+                        }
+                        if (game.sound_ON)
+                            game.loader.click.play();
+                        ballRemoved = true;
+                        iter.remove();
+                    }
+                }
+            }
+
+            touchPos.set(0, 0, 0);
+
+            // Конец жизней
+            if (lives <= 0) {
+                game.setScreen(new com.shariky.screens.FailScreen(game));
             }
         }
-
-        touchPos.set(0, 0, 0);
-
-        // Конец жизней
-        if (lives <= 0) {
-            game.setScreen(new com.shariky.screens.FailScreen(game));
-        }
-
     }
 }

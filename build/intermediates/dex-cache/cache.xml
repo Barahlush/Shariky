@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\User\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-box2d\1.9.4\98a0d25c9f0637fecac6e4aacf7287aa635964f5\gdx-box2d-1.9.4.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="98a0d25c9f0637fecac6e4aacf7287aa635964f5">
+        <dex dex="C:\Users\User\Documents\Ball\Projects\android\build\intermediates\pre-dexed\debug\gdx-box2d-1.9.4_612445963b7d02e3ff0ed7d464c73d531f2a2ca7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\User\Documents\Ball\Projects\core\build\libs\core-1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="65266e42a5063946932d3c49443b40e8640b604e">
+        <dex dex="C:\Users\User\Documents\Ball\Projects\android\build\intermediates\pre-dexed\debug\core-1.0_79b0998c2864150d1c088f2e0cdb4c179d9595df.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\User\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-backend-android\1.9.4\194b33382d6d58fad031521ba3331d926c476c9b\gdx-backend-android-1.9.4.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="194b33382d6d58fad031521ba3331d926c476c9b">
+        <dex dex="C:\Users\User\Documents\Ball\Projects\android\build\intermediates\pre-dexed\debug\gdx-backend-android-1.9.4_ecfdb8295a58c42fded6e2396b804075731dd03a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\User\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx\1.9.4\4b4b7962d1bc75af0438f5c81ec1010557bc9ee5\gdx-1.9.4.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="4b4b7962d1bc75af0438f5c81ec1010557bc9ee5">
+        <dex dex="C:\Users\User\Documents\Ball\Projects\android\build\intermediates\pre-dexed\debug\gdx-1.9.4_bdcfb5b8dfbf1fd2f67ed00d493f25ffc91fdfc1.jar" />
+    </item>
+
+</items>

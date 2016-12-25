@@ -1,0 +1,84 @@
+
+bgs1.png
+format: RGBA8888
+filter: MipMapLinearNearest,MipMapLinearNearest
+repeat: none
+hpbar
+  rotate: false
+  xy: 2, 2
+  size: 1027, 1823
+  orig: 1027, 1823
+  offset: 0, 0
+  index: 6
+
+bgs2.png
+format: RGBA8888
+filter: MipMapLinearNearest,MipMapLinearNearest
+repeat: none
+hpbar
+  rotate: false
+  xy: 2, 2
+  size: 1027, 1823
+  orig: 1027, 1823
+  offset: 0, 0
+  index: 5
+
+bgs3.png
+format: RGBA8888
+filter: MipMapLinearNearest,MipMapLinearNearest
+repeat: none
+hpbar
+  rotate: false
+  xy: 2, 2
+  size: 1027, 1823
+  orig: 1027, 1823
+  offset: 0, 0
+  index: 4
+
+bgs4.png
+format: RGBA8888
+filter: MipMapLinearNearest,MipMapLinearNearest
+repeat: none
+hpbar
+  rotate: false
+  xy: 2, 2
+  size: 1027, 1823
+  orig: 1027, 1823
+  offset: 0, 0
+  index: 3
+
+bgs5.png
+format: RGBA8888
+filter: MipMapLinearNearest,MipMapLinearNearest
+repeat: none
+hpbar
+  rotate: false
+  xy: 2, 2
+  size: 1027, 1823
+  orig: 1027, 1823
+  offset: 0, 0
+  index: 2
+
+bgs6.png
+format: RGBA8888
+filter: MipMapLinearNearest,MipMapLinearNearest
+repeat: none
+hpbar
+  rotate: false
+  xy: 2, 2
+  size: 1027, 1823
+  orig: 1027, 1823
+  offset: 0, 0
+  index: 1
+
+bgs7.png
+format: RGBA8888
+filter: MipMapLinearNearest,MipMapLinearNearest
+repeat: none
+bg
+  rotate: false
+  xy: 2, 2
+  size: 1027, 1823
+  orig: 1027, 1823
+  offset: 0, 0
+  index: -1

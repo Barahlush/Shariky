@@ -4,6 +4,8 @@ import com.badlogic.gdx.Screen;
 import com.shariky.gamefield.GameRenderer;
 import com.shariky.gamefield.GameWorld;
 
+import static com.shariky.gamefield.GameWorld.State.PAUSE;
+import static com.shariky.gamefield.GameWorld.State.RUN;
 import static com.shariky.helpers.AssetLoader.musicBall;
 
 public class GameScreen implements Screen {
@@ -11,13 +13,6 @@ public class GameScreen implements Screen {
     final Shariky game;
     private GameWorld world;
     private GameRenderer renderer;
-    public enum State {
-        RUN,
-        PAUSE,
-        RESUME,
-        STOPPED
-    }
-    private State gameState = State.RUN;
 
 
 	public GameScreen (final Shariky gam) {
@@ -26,22 +21,13 @@ public class GameScreen implements Screen {
         renderer = new GameRenderer(world, this.game);
         world.setCamera(renderer.getCamera());
 
-        musicBall.setLooping(true);
-		musicBall.play();
 	}
 
     // Отрисовка
 	@Override
 	public void render (float delta) {
-
-        switch(gameState) {
-            case RUN:
-                world.update(delta);
-                renderer.render(gameState);
-                break;
-            case PAUSE:
-                renderer.render(gameState);
-        }
+        world.update(delta);
+        renderer.render(world.game_state);
 	}
 
     @Override
@@ -50,16 +36,18 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-
+        world.game_state = PAUSE;
     }
 
     @Override
     public void resume() {
-
+        world.game_state = PAUSE;
+        musicBall.pause();
     }
 
     @Override
     public void hide() {
+        world = new GameWorld(this.game);
         musicBall.stop();
     }
 
@@ -71,6 +59,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        musicBall.play();
+        world.game_state = RUN;
     }
 }
