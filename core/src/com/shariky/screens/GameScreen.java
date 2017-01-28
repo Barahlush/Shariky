@@ -4,6 +4,7 @@ import com.badlogic.gdx.Screen;
 import com.shariky.gamefield.GameRenderer;
 import com.shariky.gamefield.GameWorld;
 
+import static com.shariky.gamefield.GameWorld.State.FAIL;
 import static com.shariky.gamefield.GameWorld.State.PAUSE;
 import static com.shariky.gamefield.GameWorld.State.RUN;
 import static com.shariky.helpers.AssetLoader.musicBall;
@@ -36,19 +37,26 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-        world.game_state = PAUSE;
-    }
-
-    @Override
-    public void resume() {
-        world.game_state = PAUSE;
+        if(world.game_state == RUN && world.tap_to_begin)
+            world.game_state = PAUSE;
         musicBall.pause();
     }
 
     @Override
+    public void resume() {
+        if (world.game_state == RUN && world.tap_to_begin) {
+            world.game_state = PAUSE;
+        }
+        if (world.game_state != PAUSE && world.game_state != FAIL && game.sound_ON)
+            musicBall.play();
+    }
+
+    @Override
     public void hide() {
-        world = new GameWorld(this.game);
-        musicBall.stop();
+        if (world.game_state == RUN) {
+            world = new GameWorld(this.game);
+        }
+        musicBall.pause();
     }
 
     // Очистка от мусора после закрытия
@@ -60,5 +68,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         world.game_state = RUN;
+        if (game.sound_ON)
+            musicBall.play();
     }
 }

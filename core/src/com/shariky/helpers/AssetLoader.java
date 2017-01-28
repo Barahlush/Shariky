@@ -21,6 +21,7 @@ public class AssetLoader {
     public TextureRegion yl_bl;
     public TextureRegion rd_gr;
     public TextureRegion grn;
+    public TextureRegion bl_kill;
     public TextureRegion playup;
     public TextureRegion repeat;
     public Array<TextureRegion> hp;
@@ -31,13 +32,14 @@ public class AssetLoader {
     public static SpriteBatch basicBatch;
     public static BitmapFont basicFont;
     public static Sound click;
-    public static Music musicBall;
+    public static Music musicBall, main_music;
 
 
     public void load() {
         bg_atlas = new TextureAtlas("bgs_balls");
         icons_atlas = new TextureAtlas("icons_pack");
 
+        bl_kill = icons_atlas.findRegion("killer");
         yl_bl = icons_atlas.findRegion("yl");
         rd_gr = icons_atlas.findRegion("rd");
         grn = icons_atlas.findRegion("grn");
@@ -64,7 +66,10 @@ public class AssetLoader {
         basicFont.getData().setScale(0.6f);
 
         click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
-        musicBall = Gdx.audio.newMusic(Gdx.files.internal("sharikmus.mp3"));
+        main_music = Gdx.audio.newMusic(Gdx.files.internal("sharikmus.mp3"));
+        musicBall = Gdx.audio.newMusic(Gdx.files.internal("main_menu_jingle.mp3"));
+        musicBall.setLooping(true);
+        musicBall.setVolume(0.5f);
     }
 
     public void dispose(){

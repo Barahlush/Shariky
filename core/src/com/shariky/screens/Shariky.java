@@ -1,6 +1,7 @@
 package com.shariky.screens;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.shariky.helpers.AssetLoader;
@@ -14,22 +15,17 @@ import static com.shariky.helpers.AssetLoader.basicFont;
 
 public class Shariky extends Game {
 
-    public int record, score;
+    public static int record, score;
 
     public SpriteBatch batch;
     public BitmapFont font;
     public AssetLoader loader;
     static public boolean sound_ON;
-    public enum AppState {
-        MAIN_MENU,
-        GAME,
-        FAILSCREEN,
-        QUIT_MENU
-    }
 
     public float width = 480;
     public float height = 800;
 
+    public static float width_ratio, height_ratio;
     @Override
     public void create() {
         sound_ON = true;
@@ -37,6 +33,8 @@ public class Shariky extends Game {
         loader.load();
         batch = basicBatch;
         font = basicFont;
+        width_ratio = Gdx.graphics.getWidth() / width;
+        height_ratio = Gdx.graphics.getBackBufferHeight() / height;
         this.setScreen(new MainMenuScreen(this));
     }
 
