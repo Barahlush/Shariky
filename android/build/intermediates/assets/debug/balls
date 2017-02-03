@@ -1,0 +1,110 @@
+
+ballpics1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+health
+  rotate: false
+  xy: 2, 2
+  size: 85, 85
+  orig: 85, 85
+  offset: 0, 0
+  index: -1
+green_sb
+  rotate: false
+  xy: 89, 2
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+green_kb
+  rotate: false
+  xy: 2, 89
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+green_gray
+  rotate: false
+  xy: 88, 89
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+gray_sb
+  rotate: false
+  xy: 2, 175
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+gray_kb
+  rotate: false
+  xy: 88, 175
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+blue_gray
+  rotate: false
+  xy: 2, 261
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+green_blue
+  rotate: false
+  xy: 88, 261
+  size: 84, 83
+  orig: 84, 83
+  offset: 0, 0
+  index: -1
+blue_sb
+  rotate: false
+  xy: 2, 347
+  size: 84, 83
+  orig: 84, 83
+  offset: 0, 0
+  index: -1
+blue_kb
+  rotate: false
+  xy: 88, 347
+  size: 84, 83
+  orig: 84, 83
+  offset: 0, 0
+  index: -1
+tricolor
+  rotate: false
+  xy: 2, 432
+  size: 83, 83
+  orig: 83, 83
+  offset: 0, 0
+  index: -1
+death
+  rotate: false
+  xy: 87, 432
+  size: 83, 83
+  orig: 83, 83
+  offset: 0, 0
+  index: -1
+green
+  rotate: false
+  xy: 172, 432
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+gray
+  rotate: false
+  xy: 2, 517
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+blue
+  rotate: false
+  xy: 86, 517
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1

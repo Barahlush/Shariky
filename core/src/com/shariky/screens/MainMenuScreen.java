@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -17,6 +16,8 @@ import com.shariky.objects.Button;
 
 import java.util.Iterator;
 
+import static com.shariky.objects.Ball.Colors.blue;
+import static com.shariky.objects.Ball.Colors.gray;
 import static com.shariky.screens.Shariky.height_ratio;
 import static com.shariky.screens.Shariky.width_ratio;
 
@@ -35,7 +36,6 @@ public class MainMenuScreen implements Screen {
     Button playBtn, soundBtn, blue_ball, grayBall;
     private Array<Ball> balls;
 
-    private TextureRegion yBall, rBall, gBall;
     long spawnTime, lastBallTime;
     static long startSpawnTime;
     public enum MenuState {
@@ -59,26 +59,27 @@ public class MainMenuScreen implements Screen {
         touchPos = new Vector3();
 
         state = MenuState.MAIN_MENU;
-        game.record = 0;
-
 
         click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
         playBtn = new com.shariky.objects.Button(game.loader.buttons.get("play"), 180, 400);
         soundBtn = new com.shariky.objects.Button(game.loader.buttons.get("sound_on"), 6, 750, 50, 50);
-        blue_ball = new com.shariky.objects.Button(game.loader.balls.get("blue"), 100, 450);
-        grayBall = new com.shariky.objects.Button(game.loader.balls.get("gray"), 310, 450);
+        blue_ball = new com.shariky.objects.Button(game.loader.balls.get(blue), 100, 450);
+        grayBall = new com.shariky.objects.Button(game.loader.balls.get(gray), 310, 450);
 
         startSpawnTime = 200000000L;
         spawnTime = startSpawnTime;
         balls = new Array<Ball>();
         spawnBall();
 
-        game.loader.musicBall.play();
+        if (game.sound_ON)
+            game.loader.musicBall.play();
+        else
+            soundBtn.setButtonTexture(game.loader.buttons.get("sound_off"));
     }
 
     public void spawnBall() {
         Ball ball = new Ball(
-                Ball.ballMix(),
+                Ball.ballColorMix(),
                 MathUtils.random(0, 440),
                 800,
                 (int) (250)
@@ -139,7 +140,7 @@ public class MainMenuScreen implements Screen {
         soundBtn.draw(game.batch);
         if (state == MenuState.MAIN_MENU) {
             playBtn.draw(game.batch);
-            game.font.draw(game.batch, "SHARIKY 1.6", 150, 785);
+            game.font.draw(game.batch, "SHARIKY 1.9", 150, 785);
         } else {
             grayBall.draw(game.batch);
             blue_ball.draw(game.batch);

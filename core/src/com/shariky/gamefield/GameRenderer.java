@@ -46,7 +46,8 @@ public class GameRenderer {
                 batch.begin();
 
                 for (Ball ball : MyWorld.getBalls()) {
-                    batch.draw(game.loader.balls.get(ball.getColor()),
+
+                    batch.draw(game.loader.getTypeTextures(ball.getType()).get(ball.getColor()),
                             ball.getX(),
                             ball.getY(),
                             ball.getWidth(),
@@ -71,7 +72,7 @@ public class GameRenderer {
                     MyWorld.sound_btn.draw(batch);
 
 
-                // Tap to begin label ****** Better to do as a asset
+                // Tap to begin label ****** Better to do as an asset or animation
 
                     if (!MyWorld.tap_to_begin) {
                         batch.end();
@@ -122,6 +123,8 @@ public class GameRenderer {
             game.font.draw(game.batch, "Score: " + game.score, 182, 700);
             game.font.draw(game.batch, "P A U S E", 180, 765);
             MyWorld.play_btn.draw(batch);
+            MyWorld.menu_button.draw(batch);
+            game.font.draw(game.batch, "Main menu", 180, 150);
 
             batch.end();
 
@@ -138,7 +141,7 @@ public class GameRenderer {
                 batch.begin();
 
                 for (Ball ball : MyWorld.getBalls()) {
-                    batch.draw(game.loader.balls.get(ball.getColor()),
+                    batch.draw(game.loader.getTypeTextures(ball.getType()).get(ball.getColor()),
                             ball.getX(),
                             ball.getY(),
                             ball.getWidth(),

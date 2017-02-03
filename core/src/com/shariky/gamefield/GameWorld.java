@@ -8,6 +8,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.shariky.objects.Ball;
+import com.shariky.objects.BonusBalls.BallKill;
+import com.shariky.objects.BonusBalls.BallSlow;
+import com.shariky.objects.BonusBalls.DeathBall;
+import com.shariky.objects.BonusBalls.HealthBall;
+import com.shariky.objects.BonusBalls.MulticolorBall;
 import com.shariky.objects.Button;
 import com.shariky.screens.Shariky;
 
@@ -18,7 +23,14 @@ import static com.shariky.gamefield.GameWorld.State.PAUSE;
 import static com.shariky.gamefield.GameWorld.State.RUN;
 import static com.shariky.helpers.AssetLoader.click;
 import static com.shariky.helpers.AssetLoader.musicBall;
-import static com.shariky.objects.Ball.ballMix;
+import static com.shariky.objects.Ball.Colors.blue;
+import static com.shariky.objects.Ball.Colors.gray;
+import static com.shariky.objects.Ball.Colors.green;
+import static com.shariky.objects.Ball.Types.death;
+import static com.shariky.objects.Ball.Types.health;
+import static com.shariky.objects.Ball.Types.multicolor;
+import static com.shariky.objects.Ball.ballColorMix;
+import static com.shariky.objects.Ball.ballTypeMix;
 
 
 /**
@@ -40,6 +52,7 @@ public class GameWorld {
 
     static final int ball_size = 60;
     private boolean ball_removed, sound_pressed;
+    private boolean go_back;
     public boolean tap_to_begin;
     int repeat_is_out;
 
@@ -50,11 +63,11 @@ public class GameWorld {
     static long startSpawnTime;
     OrthographicCamera camera;
 
-    public com.shariky.objects.Button pause_btn, play_btn, sound_btn;
+    public com.shariky.objects.Button pause_btn, play_btn, sound_btn, menu_button;
     boolean is_btn_presd, is_record, clicked;
     Button repeat;
 
-    int last_score;
+    BallSlow slow_ball;
 
     public void setCamera(OrthographicCamera cam) {
         camera = cam;
@@ -72,6 +85,7 @@ public class GameWorld {
         touch_pos = new Vector3();
 
         balls = new Array<Ball>();
+        slow_ball = new BallSlow();
 
         startSpawnTime = 1500000000L;
         last_kill_ball_time = 3000000000L;
@@ -83,6 +97,7 @@ public class GameWorld {
         sound_pressed = false;
         is_record = false;
         tap_to_begin = false;
+        go_back = false;
 
         repeat_is_out = 0;
 
@@ -95,6 +110,7 @@ public class GameWorld {
         play_btn = new com.shariky.objects.Button(game.loader.buttons.get("play"), 190, 400);
         pause_btn = new com.shariky.objects.Button(game.loader.buttons.get("pause"), 445, 758, 35, 35);
         repeat = new com.shariky.objects.Button(game.loader.buttons.get("repeat"), 170, 900, 150, 150);
+        menu_button = new com.shariky.objects.Button(game.loader.buttons.get("repeat"), 220, 200, 60, 60);
         repeat.setSpeed(2780);
 
         is_btn_presd = false;
@@ -110,31 +126,118 @@ public class GameWorld {
 
     // Find color by Y-coord
 
-    private String fieldColor(int y) {
-        if (y < 250) return "grey";
-        else if (y < 500) return "blue";
-        else return "green";
+    private Ball.Colors fieldColor(int y) {
+        if (y < 260) return gray;
+        else if (y < 500) return blue;
+        else return green;
     }
 
     // Balls generator
 
     public void spawnBall() {
+        Ball.Types ball_type = ballTypeMix();
         Ball ball = new Ball(
-                ballMix(),
+                ballColorMix(),
                 MathUtils.random(40, 440 - ball_size),
                 800,
-                (int) (90 + game.score / 5)
+                (int) (100 + game.score / 20)
         );
-        balls.add(ball);
+        switch (ball_type) {
+            case ball:
+                balls.add(ball);
+                break;
+            case slow:
+                BallSlow slow_ball = new BallSlow(ball);
+                balls.add(slow_ball);
+                break;
+            case kill:
+                BallKill kill_ball = new BallKill(ball);
+                balls.add(kill_ball);
+                break;
+            case health:
+                HealthBall health_ball = new HealthBall(ball);
+                balls.add(health_ball);
+                break;
+            case death:
+                DeathBall death_ball = new DeathBall(ball);
+                balls.add(death_ball);
+                break;
+            case multicolor:
+                MulticolorBall mult_ball = new MulticolorBall(ball);
+                balls.add(mult_ball);
+                break;
+        }
+
         last_ball_time = TimeUtils.nanoTime();
     }
 
+    public boolean getGoBack() {
+        return go_back;
+    }
 
     public Array<Ball> getBalls() {
         return balls;
     }
 
+    private boolean is_missed(Ball ball) {
+        if (ball.clickCheck(touch_pos.x, touch_pos.y)) {
+            if (fieldColor((int) touch_pos.y) != ball.getColor()
+                    && ball.getType() != health
+                    && ball.getType() != death) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean good_color(float y, Ball ball){
+        if (ball.getType() != multicolor)
+            return (fieldColor((int) touch_pos.y) == ball.getColor()
+                || ball.getType() == health
+                || ball.getType() == death);
+        else
+            switch (ball.getColor()){
+                case blue_gray:
+                    return fieldColor((int) touch_pos.y) == blue
+                            || fieldColor((int) touch_pos.y) == gray;
+                case green_blue:
+                    return fieldColor((int) touch_pos.y) == blue
+                            || fieldColor((int) touch_pos.y) == green;
+                case green_gray:
+                    return fieldColor((int) touch_pos.y) == green ||
+                            fieldColor((int) touch_pos.y) == gray;
+                case tricolor:
+                    return fieldColor((int) touch_pos.y) == green ||
+                            fieldColor((int) touch_pos.y) == gray ||
+                            fieldColor((int) touch_pos.y) == blue;
+            }
+        return false;
+    }
+
+    private boolean good_color(Ball.Colors field, Ball ball){
+        if (ball.getType() != multicolor)
+            return (field == ball.getColor());
+        else
+            switch (ball.getColor()){
+                case blue_gray:
+                    return field == blue
+                            || field == gray;
+                case green_blue:
+                    return field == blue
+                            || field == green;
+                case green_gray:
+                    return field == green ||
+                            field == gray;
+                case tricolor:
+                    return field == green ||
+                            field == gray ||
+                            field == blue;
+            }
+        return false;
+    }
+
     public void update(float delta) {
+
 
         // Touch actions
 
@@ -162,6 +265,16 @@ public class GameWorld {
                         musicBall.play();
                     }
                 }
+
+
+               // Menu button
+
+                if (menu_button.clickCheck(touch_pos.x, touch_pos.y)) {
+                    go_back = true;
+                    if (game.sound_ON) {
+                        game.loader.click.play();
+                    }
+                }
                 break;
 
             case RUN:
@@ -170,7 +283,7 @@ public class GameWorld {
                         &&!tap_to_begin
                         && !sound_btn.clickCheck(touch_pos.x, touch_pos.y)
                         && !pause_btn.clickCheck(touch_pos.x, touch_pos.y)
-                        && TimeUtils.nanoTime() - time >= 1000000000L
+                        && TimeUtils.nanoTime() - time >= 500000000L
                 ) {
                     if (game.sound_ON)
                         click.play();
@@ -213,64 +326,125 @@ public class GameWorld {
                 // Balls generation on time
 
                 if (TimeUtils.nanoTime() - last_ball_time > spawn_time) spawnBall();
+                BallSlow.updateSlowTime(TimeUtils.nanoTime());
 
                 // Balls moving
 
+                boolean is_killed = false;
                 Iterator<Ball> iter = balls.iterator();
-                boolean kill_ball_clicked = false;
                 while (iter.hasNext()) {
                     Ball ball = iter.next();
-                    ball.setY((int) (ball.getY() - ball.getSpeed() * Gdx.graphics.getDeltaTime()));
+                    if (ball.isSlowed()) {
+                        ball.setY((int) (ball.getY() - 0.2 * ball.getSpeed() * Gdx.graphics.getDeltaTime()));
+                    } else {
+                        ball.setY((int) (ball.getY() - ball.getSpeed() * Gdx.graphics.getDeltaTime()));
+                    }
                     if (ball.getY() == 0)
                         ball.setSpeed(200);
 
                     // Balls falling under the screen
 
-                    if (ball.getY() + ball_size < 0) {
+                    if (ball.getY() + ball_size < 0 && ball.getType() != death) {
                         lives -= 2;
                         iter.remove();
                     }
                     if (!ball_removed) {
 
-                        // Ball clicked
+                        // Ball clicked or killed
 
-                        if (ball.clickCheck(touch_pos.x, touch_pos.y)) {
-                            if (fieldColor((int) touch_pos.y) == ball.getColor() /*||
-                                    (fieldColor((int) touch_pos.y) == "green"
-                                            && ball.getColor() == bl_killBall )*/) {
-                                game.score += 10;
-                                spawn_time = startSpawnTime - game.score * 1000000;
-                              /*  if (ball.getColor() == bl_killBall) {
-                                    game.score += 20;
-                                    last_score += 30;
-                                    kill_ball_clicked = true;
-                                }  */
-                            } else {
+                        if (ball.clickCheck(touch_pos.x, touch_pos.y)
+                                || BallKill.isKilled(ball.getColor()) ) {
+
+                            boolean missed = false;
+                            if (!good_color(touch_pos.y, ball)) {
                                 lives -= 1;
+                                missed = true;
+                                touch_pos.set(0, 0, 0);
                             }
+
+                            if (!missed)
+                                switch (ball.getType()) {
+
+                                    case ball:
+                                        game.score += 10;
+                                        break;
+
+                                    case slow:
+                                        game.score += 15;
+                                        BallSlow.setSlowTime(
+                                                BallSlow.getSlowTime().get(ball.getColor()) + TimeUtils.nanoTime(),
+                                                ball.getColor()
+                                        );
+                                        break;
+
+                                    case kill:
+                                        game.score += 15;
+                                        BallKill.setKilled(ball.getColor());
+                                        break;
+
+                                    case health:
+                                        game.score += 20;
+                                        lives += 1;
+                                        break;
+
+                                    case death:
+                                        lives -= 6;
+                                        break;
+
+                                    case multicolor:
+                                        game.score += 20;
+                                }
+                                spawn_time = startSpawnTime - game.score * 1000000;
+
                             if (game.sound_ON)
                                 game.loader.click.play();
-                            ball_removed = true;
-                            iter.remove();
+
+                            if (!BallKill.isKilled(ball.getColor()))
+                                ball_removed = true;
+
+                            if (ball.getType() != multicolor)
+                                iter.remove();
+                            else
+                                ball.mult_simpl(fieldColor((int) touch_pos.y));
                         }
                     }
                 }
-                // Kill ball model
 
-              /*if (kill_ball_clicked) {
-                    Iterator<Ball> iterat = balls.iterator();
-                    while (iterat.hasNext()) {
-                        Ball ball = iterat.next();
-                        if (ball.getColor() == "blue" || ball.getColor() == bl_killBall) {
-                            game.score += 10;
-                            if (ball.getColor() == bl_killBall)
-                                game.score += 20;
-                            iterat.remove();
+              if (BallKill.isKilled()) {
+                  iter = balls.iterator();
+                  while (iter.hasNext()) {
+                      Ball ball = iter.next();
+                      if (good_color(BallKill.getKilledColor(), ball)) {
+                          switch (ball.getType()) {
+
+                              case ball:
+                                  game.score += 10;
+                                  break;
+
+                              case slow:
+                                  game.score += 15;
+                                  BallSlow.setSlowTime(
+                                          BallSlow.getSlowTime().get(ball.getColor()) + TimeUtils.nanoTime(),
+                                          ball.getColor()
+                                  );
+                                  break;
+
+                              case kill:
+                                  game.score += 15;
+                                  break;
+
+                              case multicolor:
+                                  game.score += 20;
+                          }
+                          if (ball.getType() != multicolor)
+                              iter.remove();
+                          else
+                              ball.mult_simpl(BallKill.getKilledColor());
                         }
+                  }
+                  BallKill.resetKilled();
+              }
 
-                    }
-                    kill_ball_clicked = false;
-                } */
 
                 touch_pos.set(0, 0, 0);
 
@@ -279,6 +453,8 @@ public class GameWorld {
                 if (lives <= 0) {
                     game_state = FAIL;
                     musicBall.pause();
+                } else if (lives > 6) {
+                    lives = 6;
                 }
 
             break;

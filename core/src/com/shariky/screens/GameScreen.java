@@ -28,6 +28,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void render (float delta) {
         world.update(delta);
+        if (world.getGoBack())
+            game.setScreen(new MainMenuScreen(game));
         renderer.render(world.game_state);
 	}
 

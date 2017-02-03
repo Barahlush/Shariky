@@ -9,8 +9,19 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.shariky.objects.Ball;
 
 import java.util.HashMap;
+
+import static com.shariky.objects.Ball.Colors.blue;
+import static com.shariky.objects.Ball.Colors.blue_gray;
+import static com.shariky.objects.Ball.Colors.death_ball;
+import static com.shariky.objects.Ball.Colors.gray;
+import static com.shariky.objects.Ball.Colors.green;
+import static com.shariky.objects.Ball.Colors.green_blue;
+import static com.shariky.objects.Ball.Colors.green_gray;
+import static com.shariky.objects.Ball.Colors.health_ball;
+import static com.shariky.objects.Ball.Colors.tricolor;
 
 /**
  * Created by User on 17.12.2016.
@@ -21,12 +32,11 @@ public class AssetLoader {
     private TextureAtlas bg_atlas;
     private TextureAtlas icons_atlas;
     private TextureAtlas balls_atlas;
-    public HashMap<String, TextureRegion> kill_balls;
-    public HashMap<String, TextureRegion> balls;
-    public HashMap<String, TextureRegion> slow_balls;
-    public HashMap<String, TextureRegion> multiclr_balls;
-    public TextureRegion death_ball;
-    public TextureRegion health_ball;
+    public HashMap<Ball.Colors, TextureRegion> black_balls;
+    public HashMap<Ball.Colors, TextureRegion> kill_balls;
+    public HashMap<Ball.Colors, TextureRegion> balls;
+    public HashMap<Ball.Colors, TextureRegion> slow_balls;
+    public HashMap<Ball.Colors, TextureRegion> multiclr_balls;
     public HashMap<String, TextureRegion> buttons;
     public Array<TextureRegion> hp;
     public TextureRegion bg;
@@ -42,31 +52,31 @@ public class AssetLoader {
         icons_atlas = new TextureAtlas("icons");
 
         // Balls textures
-        death_ball = new TextureRegion();
-        balls = new HashMap<String, TextureRegion>(3);
-        kill_balls = new HashMap<String, TextureRegion>(3);
-        slow_balls = new HashMap<String, TextureRegion>(3);
-        multiclr_balls = new HashMap<String, TextureRegion>(3);
+        black_balls = new HashMap<Ball.Colors, TextureRegion>(2);
+        balls = new HashMap<Ball.Colors, TextureRegion>(3);
+        kill_balls = new HashMap<Ball.Colors, TextureRegion>(3);
+        slow_balls = new HashMap<Ball.Colors, TextureRegion>(3);
+        multiclr_balls = new HashMap<Ball.Colors, TextureRegion>(3);
 
-        death_ball = balls_atlas.findRegion("death");
-        health_ball = balls_atlas.findRegion("health");
+        black_balls.put(death_ball, balls_atlas.findRegion("death"));
+        black_balls.put(health_ball, balls_atlas.findRegion("health"));
 
-        balls.put("blue", balls_atlas.findRegion("blue"));
-        balls.put("gray", balls_atlas.findRegion("gray"));
-        balls.put("green", balls_atlas.findRegion("green"));
+        balls.put(blue, balls_atlas.findRegion("blue"));
+        balls.put(gray, balls_atlas.findRegion("gray"));
+        balls.put(green, balls_atlas.findRegion("green"));
 
-        kill_balls.put("green", balls_atlas.findRegion("green_kb"));
-        kill_balls.put("blue", balls_atlas.findRegion("blue_kb"));
-        kill_balls.put("gray", balls_atlas.findRegion("gray_kb"));
+        kill_balls.put(green, balls_atlas.findRegion("green_kb"));
+        kill_balls.put(blue, balls_atlas.findRegion("blue_kb"));
+        kill_balls.put(gray, balls_atlas.findRegion("gray_kb"));
 
-        slow_balls.put("green", balls_atlas.findRegion("green_sb"));
-        slow_balls.put("blue", balls_atlas.findRegion("blue_sb"));
-        slow_balls.put("gray", balls_atlas.findRegion("gray_sb"));
+        slow_balls.put(green, balls_atlas.findRegion("green_sb"));
+        slow_balls.put(blue, balls_atlas.findRegion("blue_sb"));
+        slow_balls.put(gray, balls_atlas.findRegion("gray_sb"));
 
-        multiclr_balls.put("green_blue", balls_atlas.findRegion("green_blue"));
-        multiclr_balls.put("tricolor", balls_atlas.findRegion("tricolor"));
-        multiclr_balls.put("green_gray", balls_atlas.findRegion("green_gray"));
-        multiclr_balls.put("blue_gray", balls_atlas.findRegion("blue_gray"));
+        multiclr_balls.put(green_blue, balls_atlas.findRegion("green_blue"));
+        multiclr_balls.put(tricolor, balls_atlas.findRegion("tricolor"));
+        multiclr_balls.put(green_gray, balls_atlas.findRegion("green_gray"));
+        multiclr_balls.put(blue_gray, balls_atlas.findRegion("blue_gray"));
 
         // Button textures
         buttons = new HashMap<String, TextureRegion>();
@@ -108,9 +118,28 @@ public class AssetLoader {
         musicBall.setVolume(0.5f);
     }
 
+    public HashMap<Ball.Colors, TextureRegion> getTypeTextures(Ball.Types type) {
+        switch(type) {
+            case ball:
+                return balls;
+            case kill:
+                return kill_balls;
+            case slow:
+                return slow_balls;
+            case multicolor:
+                return multiclr_balls;
+            case death:
+            case health:
+                return black_balls;
+        }
+        return balls;
+    }
+
     public void dispose(){
         bg_atlas.dispose();
         balls_atlas.dispose();
+        icons_atlas.dispose();
+
         basicBatch.dispose();
         basicFont.dispose();
         click.dispose();
