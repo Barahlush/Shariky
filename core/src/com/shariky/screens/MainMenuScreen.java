@@ -32,7 +32,7 @@ public class MainMenuScreen implements Screen {
     ShapeRenderer shapeRenderer;
     boolean isBtnPresd, isBtnPresdOccur, clicked, sound_pressed;
     Sound click;
-    Button playBtn, soundBtn, blueBall, grayBall;
+    Button playBtn, soundBtn, blue_ball, grayBall;
     private Array<Ball> balls;
 
     private TextureRegion yBall, rBall, gBall;
@@ -63,15 +63,11 @@ public class MainMenuScreen implements Screen {
 
 
         click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
-        playBtn = new com.shariky.objects.Button(game.loader.playup, 180, 400);
-        soundBtn = new com.shariky.objects.Button(game.loader.sound_on, 6, 750, 50, 50);
-        blueBall = new com.shariky.objects.Button(game.loader.yl_bl, 100, 450);
-        grayBall = new com.shariky.objects.Button(game.loader.rd_gr, 310, 450);
+        playBtn = new com.shariky.objects.Button(game.loader.buttons.get("play"), 180, 400);
+        soundBtn = new com.shariky.objects.Button(game.loader.buttons.get("sound_on"), 6, 750, 50, 50);
+        blue_ball = new com.shariky.objects.Button(game.loader.balls.get("blue"), 100, 450);
+        grayBall = new com.shariky.objects.Button(game.loader.balls.get("gray"), 310, 450);
 
-
-        yBall = game.loader.yl_bl;
-        rBall = game.loader.rd_gr;
-        gBall = game.loader.grn;
         startSpawnTime = 200000000L;
         spawnTime = startSpawnTime;
         balls = new Array<Ball>();
@@ -82,7 +78,7 @@ public class MainMenuScreen implements Screen {
 
     public void spawnBall() {
         Ball ball = new Ball(
-                ballMix(),
+                Ball.ballMix(),
                 MathUtils.random(0, 440),
                 800,
                 (int) (250)
@@ -91,25 +87,12 @@ public class MainMenuScreen implements Screen {
         lastBallTime = TimeUtils.nanoTime();
     }
 
-    public TextureRegion ballMix() {
-        int color = MathUtils.random(0, 2);
-        switch (color) {
-            case 0:
-                return rBall;
-            case 1:
-                return gBall;
-            case 2:
-                return yBall;
-        }
-        return ballMix();
-    }
-
     @Override
     public void show() {
 
     }
 
-    // Отрисовка
+    // Drawing
     @Override
     public void render(float delta) {
 
@@ -118,7 +101,9 @@ public class MainMenuScreen implements Screen {
         while (iter.hasNext()) {
             Ball ball = iter.next();
             ball.setY((int) (ball.getY() - ball.getSpeed() * Gdx.graphics.getDeltaTime()));
+
             // Проваливание шарика вниз
+
             if (ball.getY() + ball.getWidth() < 0) {
                 iter.remove();
             }
@@ -133,7 +118,11 @@ public class MainMenuScreen implements Screen {
         game.batch.begin();
 
         for (Ball ball : balls) {
-            game.batch.draw(ball.getColor(), ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight());
+            game.batch.draw(game.loader.balls.get(ball.getColor()),
+                    ball.getX(),
+                    ball.getY(),
+                    ball.getWidth(),
+                    ball.getHeight());
         }
         game.batch.end();
 
@@ -153,13 +142,14 @@ public class MainMenuScreen implements Screen {
             game.font.draw(game.batch, "SHARIKY 1.6", 150, 785);
         } else {
             grayBall.draw(game.batch);
-            blueBall.draw(game.batch);
+            blue_ball.draw(game.batch);
             game.font.draw(game.batch, "CHOOSE YOUR GAME", 75, 630);
             game.font.draw(game.batch, "CLASSIC", 80, 420);
             game.font.draw(game.batch, "COMING", 280, 425);
             game.font.draw(game.batch, "SOON", 295, 395);
         }
         game.batch.end();
+
         // Нажатие на кнопку
 
         if (Gdx.input.isTouched()) {
@@ -170,11 +160,11 @@ public class MainMenuScreen implements Screen {
             if (soundBtn.clickCheck(touchPos.x, touchPos.y)) {
                 if (!sound_pressed) {
                     if (game.sound_ON) {
-                        soundBtn.setButtonTexture(game.loader.sound_off);
+                        soundBtn.setButtonTexture(game.loader.buttons.get("sound_off"));
                         game.sound_ON = false;
                         game.loader.musicBall.pause();
                     } else {
-                        soundBtn.setButtonTexture(game.loader.sound_on);
+                        soundBtn.setButtonTexture(game.loader.buttons.get("sound_on"));
                         game.sound_ON = true;
                         game.loader.musicBall.play();
                     }
@@ -195,7 +185,7 @@ public class MainMenuScreen implements Screen {
                 isBtnPresd = false;
             }
             if (state == MenuState.GAME_TYPE_MENU) {
-                if (blueBall.clickCheck(touchPos.x, touchPos.y)) {
+                if (blue_ball.clickCheck(touchPos.x, touchPos.y)) {
                     game.setScreen(new GameScreen(game));
                     if (game.sound_ON)
                         click.play();

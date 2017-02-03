@@ -1,6 +1,6 @@
 package com.shariky.objects;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -8,13 +8,13 @@ import com.badlogic.gdx.math.Rectangle;
  */
 
 public class Ball {
-    private TextureRegion color;
+    private String color;
 
     private int speed;
 
     public Rectangle body;
 
-    public Ball(TextureRegion color, int x, int y, int speed) {
+    public Ball(String color, int x, int y, int speed) {
         this.body = new Rectangle();
         this.setColor(color);
         this.setX(x);
@@ -25,7 +25,7 @@ public class Ball {
     }
 
     // SETTLERS
-    public void setColor(TextureRegion color) {
+    public void setColor(String color) {
     this.color = color;
     }
     public void setX(int X) {
@@ -40,7 +40,7 @@ public class Ball {
     public int getSpeed() {
         return speed;
     }
-    public TextureRegion getColor() {
+    public String getColor() {
         return color;
     }
     public float getX() {
@@ -59,6 +59,19 @@ public class Ball {
         } else {
             return false;
         }
+    }
+
+    public static String ballMix() {
+        int color = MathUtils.random(0, 3);
+        switch (color) {
+            case 0:
+                return "gray";
+            case 1:
+                return "green";
+            case 2:
+                return "blue";
+        }
+        return ballMix();
     }
 }
 

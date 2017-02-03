@@ -35,6 +35,7 @@ public class GameRenderer {
     public OrthographicCamera getCamera() {
         return camera;
     }
+
     public void render(GameWorld.State state) {
 
                 Gdx.graphics.getGL20().glClearColor( 1, 1, 1, 1 );
@@ -42,13 +43,19 @@ public class GameRenderer {
 
                 batch.setProjectionMatrix(camera.combined);
 
-
                 batch.begin();
 
                 for (Ball ball : MyWorld.getBalls()) {
-                    batch.draw(ball.getColor(), ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight());
+                    batch.draw(game.loader.balls.get(ball.getColor()),
+                            ball.getX(),
+                            ball.getY(),
+                            ball.getWidth(),
+                            ball.getHeight());
                 }
+
+        // Score
                 if (state == GameWorld.State.RUN) {
+
                     if (game.score < 10)
                         font.draw(batch, "" + game.score, 460, 40);
                     else if (game.score < 100)
@@ -60,10 +67,17 @@ public class GameRenderer {
                     else if (game.score < 100000)
                         font.draw(batch, "" + game.score, 380, 40);
 
-                    MyWorld.pauseBtn.draw(batch);
-                    MyWorld.soundBtn.draw(batch);
+                    MyWorld.pause_btn.draw(batch);
+                    MyWorld.sound_btn.draw(batch);
+
+
+                // Tap to begin label ****** Better to do as a asset
+
                     if (!MyWorld.tap_to_begin) {
                         batch.end();
+
+                    // Gray rectangle
+
                         Gdx.gl.glEnable(GL20.GL_BLEND);
                         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
                         MyWorld.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -76,18 +90,25 @@ public class GameRenderer {
                         );
                         MyWorld.shapeRenderer.end();
                         Gdx.gl.glDisable(GL20.GL_BLEND);
+
                         batch.begin();
+
                         font.draw(batch, "Tap to begin...", 150, 650);
+
                     }
                 }
+
                 batch.draw(game.loader.bg, 0, 0, game.width, game.height);
+
                 if (MyWorld.lives - 1 >= 0)
                     batch.draw(game.loader.hp.get(MyWorld.lives - 1), 0, 0, game.width, game.height);
+
                 batch.end();
+    // Pause menu
 
         if (state == GameWorld.State.PAUSE) {
-            batch.begin();
-            batch.end();
+
+            // Gray rectangle
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             MyWorld.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -95,14 +116,21 @@ public class GameRenderer {
             MyWorld.shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(),Gdx.graphics.getBackBufferHeight());
             MyWorld.shapeRenderer.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
+
             batch.begin();
+
             game.font.draw(game.batch, "Score: " + game.score, 182, 700);
             game.font.draw(game.batch, "P A U S E", 180, 765);
-            MyWorld.playBtn.draw(batch);
+            MyWorld.play_btn.draw(batch);
+
             batch.end();
 
+    // Fail menu
+
         } else if (state == GameWorld.State.FAIL) {
+
             if (MyWorld.balls.size != 0) {
+
                 Gdx.graphics.getGL20().glClearColor( 1, 1, 1, 1 );
                 Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
@@ -110,12 +138,19 @@ public class GameRenderer {
                 batch.begin();
 
                 for (Ball ball : MyWorld.getBalls()) {
-                    batch.draw(ball.getColor(), ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight());
+                    batch.draw(game.loader.balls.get(ball.getColor()),
+                            ball.getX(),
+                            ball.getY(),
+                            ball.getWidth(),
+                            ball.getHeight());
                 }
                 batch.draw(game.loader.bg, 0, 0, game.width, game.height);
+
                 batch.end();
+
             } else {
 
+            // Gray rectangle
                 Gdx.gl.glEnable(GL20.GL_BLEND);
                 Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
                 MyWorld.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -125,13 +160,15 @@ public class GameRenderer {
                 Gdx.gl.glDisable(GL20.GL_BLEND);
 
                 batch.begin();
+
                 MyWorld.repeat.draw(batch);
 
-                if (MyWorld.repeatIsOut == 2) {
+                if (MyWorld.repeat_is_out == 2) {
                     game.font.draw(game.batch, "Your score: " + game.score, 145, 750);
-                    if (MyWorld.isRecord)
+                    if (MyWorld.is_record)
                         game.font.draw(game.batch, "NEW RECORD!", 140, 680);
                 }
+
                 batch.end();
             }
         }

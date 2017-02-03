@@ -2,10 +2,8 @@ package com.shariky.gamefield;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -20,6 +18,7 @@ import static com.shariky.gamefield.GameWorld.State.PAUSE;
 import static com.shariky.gamefield.GameWorld.State.RUN;
 import static com.shariky.helpers.AssetLoader.click;
 import static com.shariky.helpers.AssetLoader.musicBall;
+import static com.shariky.objects.Ball.ballMix;
 
 
 /**
@@ -33,33 +32,26 @@ public class GameWorld {
     public enum State {
         RUN,
         PAUSE,
-        RESUME,
-        STOPPED,
         FAIL
     }
     public State game_state;
 
-    Vector3 touchPos;
-    Rectangle touch;
+    private Vector3 touch_pos;
 
-
-
-    static final int ballSize = 60;
-    boolean ballRemoved, sound_pressed;
+    static final int ball_size = 60;
+    private boolean ball_removed, sound_pressed;
     public boolean tap_to_begin;
-    int repeatIsOut;
-    public Array<Ball> balls;
+    int repeat_is_out;
 
+    public Array<Ball> balls;
     int lives;
 
-    private TextureRegion yBall, rBall, gBall, bl_killBall;
-
-    long spawnTime, lastBallTime, lastKillBallTime, time;
+    long spawn_time, last_ball_time, last_kill_ball_time, time;
     static long startSpawnTime;
     OrthographicCamera camera;
 
-    public com.shariky.objects.Button pauseBtn, playBtn, soundBtn;
-    boolean isBtnPresd, isRecord, clicked;
+    public com.shariky.objects.Button pause_btn, play_btn, sound_btn;
+    boolean is_btn_presd, is_record, clicked;
     Button repeat;
 
     int last_score;
@@ -75,44 +67,37 @@ public class GameWorld {
             game.loader.click.play();
         shapeRenderer = new ShapeRenderer();
 
-        yBall = game.loader.yl_bl;
-        rBall = game.loader.rd_gr;
-        gBall = game.loader.grn;
-        bl_killBall = game.loader.bl_kill;
         game_state = RUN;
 
-        touchPos = new Vector3();
-        touch = new Rectangle();
-
-        startSpawnTime = 1500000000L;
-        lastKillBallTime = 3000000000L;
-        spawnTime = startSpawnTime;
-        time = TimeUtils.nanoTime();
-
+        touch_pos = new Vector3();
 
         balls = new Array<Ball>();
-        lastBallTime = TimeUtils.nanoTime() + 10000000L;
-        ballRemoved = false;
+
+        startSpawnTime = 1500000000L;
+        last_kill_ball_time = 3000000000L;
+        spawn_time = startSpawnTime;
+        time = TimeUtils.nanoTime();
+
+        last_ball_time = TimeUtils.nanoTime() + 10000000L;
+        ball_removed = false;
         sound_pressed = false;
-        isRecord = false;
+        is_record = false;
         tap_to_begin = false;
 
-        repeatIsOut = 0;
+        repeat_is_out = 0;
 
-
-        pauseBtn = new com.shariky.objects.Button(game.loader.pause, 445, 758, 35, 35);
 
         if (game.sound_ON)
-            soundBtn = new com.shariky.objects.Button(game.loader.sound_on, 6, 760, 45, 45);
+            sound_btn = new com.shariky.objects.Button(game.loader.buttons.get("sound_on"), 6, 760, 45, 45);
         else
-            soundBtn = new com.shariky.objects.Button(game.loader.sound_off, 6, 760, 45, 45);
+            sound_btn = new com.shariky.objects.Button(game.loader.buttons.get("sound_off"), 6, 760, 45, 45);
 
-        playBtn = new com.shariky.objects.Button(game.loader.playup, 190, 400);
-
-        repeat = new com.shariky.objects.Button(game.loader.repeat, 170, 900, 150, 150);
+        play_btn = new com.shariky.objects.Button(game.loader.buttons.get("play"), 190, 400);
+        pause_btn = new com.shariky.objects.Button(game.loader.buttons.get("pause"), 445, 758, 35, 35);
+        repeat = new com.shariky.objects.Button(game.loader.buttons.get("repeat"), 170, 900, 150, 150);
         repeat.setSpeed(2780);
 
-        isBtnPresd = false;
+        is_btn_presd = false;
         clicked = false;
 
         if (game.sound_ON)
@@ -123,44 +108,27 @@ public class GameWorld {
         lives = 6;
     }
 
-    // Определение цвета поля по касанию
-    private TextureRegion fieldColor(int y) {
-        if (y < 250) return rBall;
-        else if (y < 500) return yBall;
-        else return gBall;
+    // Find color by Y-coord
+
+    private String fieldColor(int y) {
+        if (y < 250) return "grey";
+        else if (y < 500) return "blue";
+        else return "green";
     }
 
-    // Генератор шариков
+    // Balls generator
+
     public void spawnBall() {
         Ball ball = new Ball(
                 ballMix(),
-                MathUtils.random(40, 440 - ballSize),
+                MathUtils.random(40, 440 - ball_size),
                 800,
                 (int) (90 + game.score / 5)
         );
         balls.add(ball);
-        lastBallTime = TimeUtils.nanoTime();
+        last_ball_time = TimeUtils.nanoTime();
     }
 
-    // Рандомизация цвета для генератора
-
-    public TextureRegion ballMix() {
-        int color = MathUtils.random(0, 3);
-        switch (color) {
-            case 0:
-                return rBall;
-            case 1:
-                return gBall;
-            case 2:
-                return yBall;
-            case 3:
-                if (game.score - last_score > 100) {
-                    last_score = game.score;
-                    return bl_killBall;
-                }
-        }
-        return ballMix();
-    }
 
     public Array<Ball> getBalls() {
         return balls;
@@ -168,20 +136,25 @@ public class GameWorld {
 
     public void update(float delta) {
 
-        // Действия при касании
-        if (Gdx.input.isTouched()) {
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-        } else
-            ballRemoved = false;
+        // Touch actions
 
+        if (Gdx.input.isTouched()) {
+            touch_pos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touch_pos);
+        } else
+            ball_removed = false;
+
+
+
+        // Game statements
 
         switch (game_state){
 
             case PAUSE:
 
-                // PLAY BTN
-                if (playBtn.clickCheck(touchPos.x, touchPos.y)) {
+                // Play button
+
+                if (play_btn.clickCheck(touch_pos.x, touch_pos.y)) {
                     game_state = RUN;
                     time = TimeUtils.nanoTime();
                     if (game.sound_ON) {
@@ -192,25 +165,27 @@ public class GameWorld {
                 break;
 
             case RUN:
+
                 if (Gdx.input.isTouched()
                         &&!tap_to_begin
-                        && !soundBtn.clickCheck(touchPos.x, touchPos.y)
-                        && !pauseBtn.clickCheck(touchPos.x, touchPos.y)
-                        && TimeUtils.nanoTime() - time >= 1500000000L
+                        && !sound_btn.clickCheck(touch_pos.x, touch_pos.y)
+                        && !pause_btn.clickCheck(touch_pos.x, touch_pos.y)
+                        && TimeUtils.nanoTime() - time >= 1000000000L
                 ) {
                     if (game.sound_ON)
                         click.play();
                     tap_to_begin = true;
                 }
-            // SOUND BTN
-                if (soundBtn.clickCheck(touchPos.x, touchPos.y)) {
+                 // Sound button
+
+                if (sound_btn.clickCheck(touch_pos.x, touch_pos.y)) {
                     if (!sound_pressed) {
                         if (game.sound_ON) {
-                            soundBtn.setButtonTexture(game.loader.sound_off);
+                            sound_btn.setButtonTexture(game.loader.buttons.get("sound_off"));
                             game.sound_ON = false;
                             musicBall.pause();
                         } else {
-                            soundBtn.setButtonTexture(game.loader.sound_on);
+                            sound_btn.setButtonTexture(game.loader.buttons.get("sound_on"));
                             game.sound_ON = true;
                             musicBall.play();
                         }
@@ -219,8 +194,10 @@ public class GameWorld {
                 } else {
                     sound_pressed = false;
                 }
-            // PAUSE BTN
-            if (pauseBtn.clickCheck(touchPos.x, touchPos.y)) {
+
+            // Pause button
+
+            if (pause_btn.clickCheck(touch_pos.x, touch_pos.y)) {
                 game_state = PAUSE;
 
                 if (game.sound_ON)
@@ -228,15 +205,16 @@ public class GameWorld {
                 musicBall.pause();
             }
 
-        // MODEL
+        // Game model
             if (!tap_to_begin) {
-                touchPos.set(0, 0, 0);
+                touch_pos.set(0, 0, 0);
                 break;
             }
-                // Генерирование шариков по времени
-                if (TimeUtils.nanoTime() - lastBallTime > spawnTime) spawnBall();
+                // Balls generation on time
 
-                // Передвижение шариков
+                if (TimeUtils.nanoTime() - last_ball_time > spawn_time) spawnBall();
+
+                // Balls moving
 
                 Iterator<Ball> iter = balls.iterator();
                 boolean kill_ball_clicked = false;
@@ -246,42 +224,44 @@ public class GameWorld {
                     if (ball.getY() == 0)
                         ball.setSpeed(200);
 
-                    // Проваливание шарика вниз
-                    if (ball.getY() + ballSize < 0) {
+                    // Balls falling under the screen
+
+                    if (ball.getY() + ball_size < 0) {
                         lives -= 2;
                         iter.remove();
                     }
-                    if (!ballRemoved) {
+                    if (!ball_removed) {
 
-                        // Попадание в шарик
-                        if (ball.clickCheck(touchPos.x, touchPos.y)) {
-                            if (fieldColor((int) touchPos.y) == ball.getColor() ||
-                                    (fieldColor((int) touchPos.y) == yBall
-                                            && ball.getColor() == bl_killBall)) {
+                        // Ball clicked
+
+                        if (ball.clickCheck(touch_pos.x, touch_pos.y)) {
+                            if (fieldColor((int) touch_pos.y) == ball.getColor() /*||
+                                    (fieldColor((int) touch_pos.y) == "green"
+                                            && ball.getColor() == bl_killBall )*/) {
                                 game.score += 10;
-                                spawnTime = startSpawnTime - game.score * 1000000;
-                                if (ball.getColor() == bl_killBall) {
+                                spawn_time = startSpawnTime - game.score * 1000000;
+                              /*  if (ball.getColor() == bl_killBall) {
                                     game.score += 20;
                                     last_score += 30;
                                     kill_ball_clicked = true;
-                                }
+                                }  */
                             } else {
                                 lives -= 1;
                             }
                             if (game.sound_ON)
                                 game.loader.click.play();
-                            ballRemoved = true;
+                            ball_removed = true;
                             iter.remove();
                         }
                     }
                 }
-                // Шарик-убийца
+                // Kill ball model
 
-                if (kill_ball_clicked) {
+              /*if (kill_ball_clicked) {
                     Iterator<Ball> iterat = balls.iterator();
                     while (iterat.hasNext()) {
                         Ball ball = iterat.next();
-                        if (ball.getColor() == yBall || ball.getColor() == bl_killBall) {
+                        if (ball.getColor() == "blue" || ball.getColor() == bl_killBall) {
                             game.score += 10;
                             if (ball.getColor() == bl_killBall)
                                 game.score += 20;
@@ -290,11 +270,12 @@ public class GameWorld {
 
                     }
                     kill_ball_clicked = false;
-                }
+                } */
 
-                touchPos.set(0, 0, 0);
+                touch_pos.set(0, 0, 0);
 
-                // Конец жизней
+                // Failing
+
                 if (lives <= 0) {
                     game_state = FAIL;
                     musicBall.pause();
@@ -303,38 +284,44 @@ public class GameWorld {
             break;
 
             case FAIL:
+
+                // Failing animation
+
                 Iterator<Ball> iterat = balls.iterator();
                 while (iterat.hasNext()) {
                     Ball ball = iterat.next();
                     ball.setSpeed(ball.getSpeed() + 20);
                     ball.setY((int) (ball.getY() - ball.getSpeed() * Gdx.graphics.getDeltaTime()));
-                    // Проваливание шарика вниз
-                    if (ball.getY() + ballSize < 0) {
+
+                    // Balls fall under the screen
+
+                    if (ball.getY() + ball_size < 0) {
                         iterat.remove();
                     }
                 }
+
                 if (balls.size == 0) {
                     balls.clear();
                     if (game.score > game.record) {
                         game.record = game.score;
-                        isRecord = true;
+                        is_record = true;
                     }
-                    if (repeat.getY() >= 360 && repeatIsOut == 0) {
+                    if (repeat.getY() >= 360 && repeat_is_out == 0) {
                         repeat.setY(repeat.getY() - repeat.getSpeed() * Gdx.graphics.getDeltaTime());
                         repeat.setSpeed(repeat.getSpeed() - 120);
                     } else {
-                        repeatIsOut = 1;
+                        repeat_is_out = 1;
                     }
-                    if (repeat.getY() < 400 && repeatIsOut == 1) {
+                    if (repeat.getY() < 400 && repeat_is_out == 1) {
                         repeat.setY(repeat.getY() - repeat.getSpeed() * Gdx.graphics.getDeltaTime());
                         repeat.setSpeed(repeat.getSpeed() - 120);
-                    } else if (repeatIsOut != 0){
-                        repeatIsOut = 2;
+                    } else if (repeat_is_out != 0){
+                        repeat_is_out = 2;
                         if (Gdx.input.isTouched()) {
-                            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-                            camera.unproject(touchPos);
-                            if (repeat.clickCheck(touchPos.x, touchPos.y)) {
-                                isBtnPresd = true;
+                            touch_pos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+                            camera.unproject(touch_pos);
+                            if (repeat.clickCheck(touch_pos.x, touch_pos.y)) {
+                                is_btn_presd = true;
                                 if (game.sound_ON)
                                     game.loader.click.play();
                                 if (!clicked) {
@@ -342,20 +329,22 @@ public class GameWorld {
                                 }
                             }
                         }
-                        if (isBtnPresd && !Gdx.input.isTouched()) {
-                            // NEW GAME
+                        if (is_btn_presd && !Gdx.input.isTouched()) {
+
+                            // New game initialisation
+
                             game_state = RUN;
                             startSpawnTime = 1500000000L;
-                            lastKillBallTime = 3000000000L;
-                            spawnTime = startSpawnTime;
+                            last_kill_ball_time = 3000000000L;
+                            spawn_time = startSpawnTime;
                             repeat.setSpeed(2780);
                             balls = new Array<Ball>();
-                            repeatIsOut = 0;
+                            repeat_is_out = 0;
                             tap_to_begin = false;
-                            ballRemoved = false;
+                            ball_removed = false;
                             sound_pressed = false;
-                            isRecord = false;
-                            isBtnPresd = false;
+                            is_record = false;
+                            is_btn_presd = false;
                             repeat.setX(180);
                             repeat.setY(900);
                             game.score = 0;
