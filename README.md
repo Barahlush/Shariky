@@ -1,7 +1,7 @@
 # SHARIKY
 <b> Game that will improve your reaction. Made using Java libgdx library. </b> <br>
 <i>Current version is only available for Windows and Android.</i><br>
-<i>Latest version</i> - https://github.com/Barahlush/balls/tree/stable_structured
+<i>Latest version</i> - https://github.com/Barahlush/balls/tree/presentation_1
 <br> Potentially the game is more cross-platform. It has a main (core) folder with the main game code:<br>
 https://github.com/Barahlush/balls/tree/stable_structured/core/src/com/shariky
 
