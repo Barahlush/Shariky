@@ -1,9 +1,8 @@
 # SHARIKY
 <b> Game that will improve your reaction. Made using Java libgdx library. </b> <br>
 <i>Current version is only available for Windows and Android.</i><br>
-<i>Latest version</i> - https://github.com/Barahlush/balls/tree/presentation_1
-<br> Potentially the game is more cross-platform. It has a main (core) folder with the main game code:<br>
-https://github.com/Barahlush/balls/tree/presentation_1/core/src/com/shariky
+<br> Potentially the game is cross-platform. It has a main (core) folder with the main game code:<br>
+https://github.com/Barahlush/balls/core/src/com/shariky
 
 ## Rules
 * There is a field with <i>coloured lines</i> in the sides.
@@ -31,3 +30,9 @@ https://github.com/Barahlush/balls/tree/presentation_1/core/src/com/shariky
 <br>Black ball, you will instantly recognze it. If you burst it - game over :(
 
 ## Screenshots
+<p>
+<img src="https://github.com/Barahlush/balls/blob/presentation_1/photo_2017-10-27_23-12-49.jpg" alt="Drawing" width="200" />
+<img src="https://github.com/Barahlush/balls/blob/presentation_1/photo_2017-10-27_23-12-53.jpg" alt="Drawing" width="200" />
+<img src="https://github.com/Barahlush/balls/blob/presentation_1/photo_2017-10-27_23-12-51.jpg" alt="Drawing" width="200" />
+<img src="https://github.com/Barahlush/balls/blob/presentation_1/photo_2017-10-27_23-12-49%20(2).jpg" alt="Drawing" width="200" />
+</p>
