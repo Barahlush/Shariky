@@ -3,7 +3,7 @@
 <i>Current version is only available for Windows and Android.</i><br>
 <i>Latest version</i> - https://github.com/Barahlush/balls/tree/presentation_1
 <br> Potentially the game is more cross-platform. It has a main (core) folder with the main game code:<br>
-https://github.com/Barahlush/balls/tree/stable_structured/core/src/com/shariky
+https://github.com/Barahlush/balls/tree/presentation_1/core/src/com/shariky
 
 ## Rules
 * There is a field with <i>coloured lines</i> in the sides.
