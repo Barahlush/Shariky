@@ -1,3 +1,4 @@
+
 <img src="https://github.com/Barahlush/balls/blob/presentation_1/Head.png" alt="SHARIKY" height="300" width="700"/> <br>
 
 # SHARIKY
@@ -32,6 +33,8 @@ https://github.com/Barahlush/balls/core/src/com/shariky
 <br>A normal ball that has more than one color. To burst it you should click on it in the corresponding color zones.
 5) <b>Killer ball</b>
 <br>Black ball, you will instantly recognze it. If you burst it - game over :(
+6) <b>Health ball</b>
+<br>Black heart that will give you 1 life and 20 points if you catch it.</br>
 
 ## Screenshots
 <p>
