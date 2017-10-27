@@ -1,8 +1,12 @@
+<img src="https://github.com/Barahlush/balls/blob/presentation_1/Head.png" alt="SHARIKY" height="300" width="700"/> <br>
+
 # SHARIKY
+
 <b> Game that will improve your reaction. Made using Java libgdx library. </b> <br>
 <i>Current version is only available for Windows and Android.</i><br>
 <br> Potentially the game is cross-platform. It has a main (core) folder with the main game code:<br>
 https://github.com/Barahlush/balls/core/src/com/shariky
+
 
 ## Rules
 * There is a field with <i>coloured lines</i> in the sides.
