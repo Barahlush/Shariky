@@ -43,3 +43,6 @@ https://github.com/Barahlush/balls/core/src/com/shariky
 <img src="https://github.com/Barahlush/balls/blob/presentation_1/photo_2017-10-27_23-12-51.jpg" alt="Drawing" width="200" />
 <img src="https://github.com/Barahlush/balls/blob/presentation_1/photo_2017-10-27_23-12-49%20(2).jpg" alt="Drawing" width="200" />
 </p>
+
+## Get application
+You can download apk <a href="https://github.com/Barahlush/Shariky/raw/presentation_1/Shariky.apk">here</a>.
